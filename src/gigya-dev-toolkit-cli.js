@@ -12,6 +12,7 @@ const fs = require('fs');
 state
   .option('--userKey [value]', t.GIGYA_USER_KEY)
   .option('--userSecret [value]', t.GIGYA_USER_SECRET_KEY)
+  .option('--apiDomain [value]', t.GIGYA_API_DOMAIN)
   .option('--task [value]', t.TASK)
   .option('--settings [value]', t.SETTINGS)
   .option('--partnerId [value]', t.GIGYA_PARTNER_ID)

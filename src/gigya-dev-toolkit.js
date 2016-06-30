@@ -7,7 +7,7 @@ const readFile = require('./helpers/read-file');
 const jsdiff = require('diff');
 
 const toolkit = async function({ userKey, userSecret, task, settings, partnerId, sourceFile, sourceApiKey,
-  destinationApiKeys, newSiteBaseDomain, newSiteDescription, newSiteDataCenter }) {
+  destinationApiKeys, newSiteBaseDomain, newSiteDescription, newSiteDataCenter, apiDomain }) {
   // Gigya credentials needed to access API
   if(!userKey || !userSecret) {
     return {
@@ -25,6 +25,12 @@ const toolkit = async function({ userKey, userSecret, task, settings, partnerId,
             type: 'password',
             message: 'GIGYA_USER_SECRET_KEY',
             default: userSecret
+          },
+          {
+            name: 'apiDomain',
+            type: 'input',
+            message: 'GIGYA_API_DOMAIN',
+            default: apiDomain
           }
         ]
       }
@@ -33,7 +39,7 @@ const toolkit = async function({ userKey, userSecret, task, settings, partnerId,
 
   // In cases where user has access to many partners, will not return all partners
   // Most users have a very limited number of sites, and we want to help them
-  const allPartnerSites = await GigyaDataservice.fetchUserSites({ userKey, userSecret });
+  const allPartnerSites = await GigyaDataservice.fetchUserSites({ userKey, userSecret, apiDomain });
 
   // Get partner ID
   if(!partnerId) {
@@ -78,11 +84,15 @@ const toolkit = async function({ userKey, userSecret, task, settings, partnerId,
   const findPartner = _.filter(allPartnerSites, { partnerID: partnerId });
   const partnerSites = findPartner.length
     ? findPartner
-    : await GigyaDataservice.fetchUserSites({ userKey, userSecret, partnerId });
+    : await GigyaDataservice.fetchUserSites({ userKey, userSecret, partnerId, apiDomain });
 
   // Used to list sites on partner
   const sites = [];
   for(const site of partnerSites[0].sites) {
+    //if the DC is russia, we need to explicitly set the ApiDomain, or even metadata fails
+      if(site.dataCenter == "ru1"){
+	  await GigyaDataservice.setApiDomain({apiKey:site.apiKey,apiDomain:'ru1.gigya.com'});
+      }
     // If the site breaks onto a second line it breaks my console, keep line length sane
     sites.push({
       name: `${site.baseDomain}${site.description ? ` "${site.description}"` : ''} ${site.apiKey}`,

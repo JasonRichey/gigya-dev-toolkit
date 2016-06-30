@@ -67,11 +67,13 @@ var GigyaDataservice = function () {
       var userKey = _ref2.userKey;
       var userSecret = _ref2.userSecret;
       var partnerId = _ref2.partnerId;
+      var apiDomain = _ref2.apiDomain;
 
       return GigyaDataservice._api({
         endpoint: 'admin.getUserSites',
         userKey: userKey,
         userSecret: userSecret,
+        apiDomain: apiDomain,
         params: { targetPartnerID: partnerId },
         transform: function transform(res) {
           return res.sites;
@@ -92,6 +94,7 @@ var GigyaDataservice = function () {
             case 0:
               _context.next = 2;
               return _regenerator2.default.awrap(GigyaDataservice._api({
+                apiDomain: apiDomain,
                 endpoint: 'admin.getSiteConfig',
                 userKey: userKey,
                 userSecret: userSecret,
@@ -1105,17 +1108,28 @@ var GigyaDataservice = function () {
       });
       return promises;
     }
+
+    //Set the ApiDomain for a single API
+
+  }, {
+    key: 'setApiDomain',
+    value: function setApiDomain(_ref14) {
+      var apiKey = _ref14.apiKey;
+      var apiDomain = _ref14.apiDomain;
+
+      GigyaDataservice._apiDomainMap.set(apiKey, apiDomain);
+    }
   }, {
     key: '_api',
-    value: function _api(_ref14) {
-      var apiDomain = _ref14.apiDomain;
-      var endpoint = _ref14.endpoint;
-      var userKey = _ref14.userKey;
-      var userSecret = _ref14.userSecret;
-      var params = _ref14.params;
-      var transform = _ref14.transform;
-      var _ref14$isUseCache = _ref14.isUseCache;
-      var isUseCache = _ref14$isUseCache === undefined ? false : _ref14$isUseCache;
+    value: function _api(_ref15) {
+      var apiDomain = _ref15.apiDomain;
+      var endpoint = _ref15.endpoint;
+      var userKey = _ref15.userKey;
+      var userSecret = _ref15.userSecret;
+      var params = _ref15.params;
+      var transform = _ref15.transform;
+      var _ref15$isUseCache = _ref15.isUseCache;
+      var isUseCache = _ref15$isUseCache === undefined ? false : _ref15$isUseCache;
 
       return new _promise2.default(function (resolve, reject) {
         params = params ? _.cloneDeep(params) : {};

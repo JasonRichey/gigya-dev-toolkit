@@ -17,20 +17,22 @@ class GigyaDataservice {
     });
   }
 
-  static fetchUserSites({ userKey, userSecret, partnerId }) {
+    static fetchUserSites({ userKey, userSecret, partnerId, apiDomain }) {
     return GigyaDataservice._api({
       endpoint: 'admin.getUserSites',
       userKey,
       userSecret,
+      apiDomain,
       params: { targetPartnerID: partnerId },
       transform: (res) => res.sites,
       isUseCache: true
     });
   }
 
-  static async fetchSiteConfig({ userKey, userSecret, apiKey }) {
+    static async fetchSiteConfig({ userKey, userSecret, apiKey }) {
     // Requires 3 API calls
     const siteConfig = await GigyaDataservice._api({
+      apiDomain: apiDomain,
       endpoint: 'admin.getSiteConfig',
       userKey,
       userSecret,
@@ -458,6 +460,10 @@ class GigyaDataservice {
     return promises;
   }
 
+    //Set the ApiDomain for a single API
+  static setApiDomain({apiKey, apiDomain}){
+        GigyaDataservice._apiDomainMap.set(apiKey, apiDomain);
+  }
 
   static _api({ apiDomain, endpoint, userKey, userSecret, params, transform, isUseCache = false }) {
     return new Promise((resolve, reject) => {

@@ -32,6 +32,7 @@ var toolkit = function _callee(_ref) {
   var newSiteBaseDomain = _ref.newSiteBaseDomain;
   var newSiteDescription = _ref.newSiteDescription;
   var newSiteDataCenter = _ref.newSiteDataCenter;
+  var apiDomain = _ref.apiDomain;
 
   var allPartnerSites, findPartner, partnerSites, sites, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, site, crud, settingsData, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, setting, sourceFileData, choices, _setting, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, destinationApiKey, _setting2, params, validations, sourceObjs, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, _setting3, _iteratorNormalCompletion5, _didIteratorError5, _iteratorError5, _iterator5, _step5, _destinationApiKey, diffs, _iteratorNormalCompletion6, _didIteratorError6, _iteratorError6, _iterator6, _step6, _setting4, sourceObj, destinationObj, diff, numAdded, numRemoved, _iteratorNormalCompletion7, _didIteratorError7, _iteratorError7, _iterator7, _step7, part, numChanged, isDifferent, _iteratorNormalCompletion8, _didIteratorError8, _iteratorError8, _iterator8, _step8, _part, diffLength, halfDiffLength, valueFirstHalf, valueLastHalf;
 
@@ -64,13 +65,18 @@ var toolkit = function _callee(_ref) {
                 type: 'password',
                 message: 'GIGYA_USER_SECRET_KEY',
                 default: userSecret
+              }, {
+                name: 'apiDomain',
+                type: 'input',
+                message: 'GIGYA_API_DOMAIN',
+                default: apiDomain
               }]
             }
           });
 
         case 3:
           _context.next = 5;
-          return _regenerator2.default.awrap(GigyaDataservice.fetchUserSites({ userKey: userKey, userSecret: userSecret }));
+          return _regenerator2.default.awrap(GigyaDataservice.fetchUserSites({ userKey: userKey, userSecret: userSecret, apiDomain: apiDomain }));
 
         case 5:
           allPartnerSites = _context.sent;
@@ -137,7 +143,7 @@ var toolkit = function _callee(_ref) {
 
         case 21:
           _context.next = 23;
-          return _regenerator2.default.awrap(GigyaDataservice.fetchUserSites({ userKey: userKey, userSecret: userSecret, partnerId: partnerId }));
+          return _regenerator2.default.awrap(GigyaDataservice.fetchUserSites({ userKey: userKey, userSecret: userSecret, partnerId: partnerId, apiDomain: apiDomain }));
 
         case 23:
           _context.t0 = _context.sent;
@@ -152,53 +158,73 @@ var toolkit = function _callee(_ref) {
           _didIteratorError = false;
           _iteratorError = undefined;
           _context.prev = 29;
+          _iterator = (0, _getIterator3.default)(partnerSites[0].sites);
 
-          for (_iterator = (0, _getIterator3.default)(partnerSites[0].sites); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            site = _step.value;
-
-            // If the site breaks onto a second line it breaks my console, keep line length sane
-            sites.push({
-              name: '' + site.baseDomain + (site.description ? ' "' + site.description + '"' : '') + ' ' + site.apiKey,
-              value: site.apiKey
-            });
+        case 31:
+          if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+            _context.next = 40;
+            break;
           }
 
-          _context.next = 37;
+          site = _step.value;
+
+          if (!(site.dataCenter == "ru1")) {
+            _context.next = 36;
+            break;
+          }
+
+          _context.next = 36;
+          return _regenerator2.default.awrap(GigyaDataservice.setApiDomain({ apiKey: site.apiKey, apiDomain: 'ru1.gigya.com' }));
+
+        case 36:
+          // If the site breaks onto a second line it breaks my console, keep line length sane
+          sites.push({
+            name: '' + site.baseDomain + (site.description ? ' "' + site.description + '"' : '') + ' ' + site.apiKey,
+            value: site.apiKey
+          });
+
+        case 37:
+          _iteratorNormalCompletion = true;
+          _context.next = 31;
           break;
 
-        case 33:
-          _context.prev = 33;
+        case 40:
+          _context.next = 46;
+          break;
+
+        case 42:
+          _context.prev = 42;
           _context.t1 = _context['catch'](29);
           _didIteratorError = true;
           _iteratorError = _context.t1;
 
-        case 37:
-          _context.prev = 37;
-          _context.prev = 38;
+        case 46:
+          _context.prev = 46;
+          _context.prev = 47;
 
           if (!_iteratorNormalCompletion && _iterator.return) {
             _iterator.return();
           }
 
-        case 40:
-          _context.prev = 40;
+        case 49:
+          _context.prev = 49;
 
           if (!_didIteratorError) {
-            _context.next = 43;
+            _context.next = 52;
             break;
           }
 
           throw _iteratorError;
 
-        case 43:
-          return _context.finish(40);
+        case 52:
+          return _context.finish(49);
 
-        case 44:
-          return _context.finish(37);
+        case 53:
+          return _context.finish(46);
 
-        case 45:
+        case 54:
           if (task) {
-            _context.next = 47;
+            _context.next = 56;
             break;
           }
 
@@ -214,9 +240,9 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 47:
+        case 56:
           if (settings) {
-            _context.next = 49;
+            _context.next = 58;
             break;
           }
 
@@ -232,16 +258,16 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 49:
+        case 58:
           settingsData = {};
 
           if (!(task === 'export' || task === 'copy' || task === 'validate')) {
-            _context.next = 80;
+            _context.next = 89;
             break;
           }
 
           if (sourceApiKey) {
-            _context.next = 53;
+            _context.next = 62;
             break;
           }
 
@@ -257,75 +283,75 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 53:
+        case 62:
 
           // Fetch settings from selected key
           _iteratorNormalCompletion2 = true;
           _didIteratorError2 = false;
           _iteratorError2 = undefined;
-          _context.prev = 56;
+          _context.prev = 65;
           _iterator2 = (0, _getIterator3.default)(settings);
 
-        case 58:
+        case 67:
           if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
-            _context.next = 66;
+            _context.next = 75;
             break;
           }
 
           setting = _step2.value;
-          _context.next = 62;
+          _context.next = 71;
           return _regenerator2.default.awrap(crud('fetch', setting, { apiKey: sourceApiKey }));
 
-        case 62:
+        case 71:
           settingsData[setting] = _context.sent;
 
-        case 63:
+        case 72:
           _iteratorNormalCompletion2 = true;
-          _context.next = 58;
+          _context.next = 67;
           break;
 
-        case 66:
-          _context.next = 72;
+        case 75:
+          _context.next = 81;
           break;
 
-        case 68:
-          _context.prev = 68;
-          _context.t2 = _context['catch'](56);
+        case 77:
+          _context.prev = 77;
+          _context.t2 = _context['catch'](65);
           _didIteratorError2 = true;
           _iteratorError2 = _context.t2;
 
-        case 72:
-          _context.prev = 72;
-          _context.prev = 73;
+        case 81:
+          _context.prev = 81;
+          _context.prev = 82;
 
           if (!_iteratorNormalCompletion2 && _iterator2.return) {
             _iterator2.return();
           }
 
-        case 75:
-          _context.prev = 75;
+        case 84:
+          _context.prev = 84;
 
           if (!_didIteratorError2) {
-            _context.next = 78;
+            _context.next = 87;
             break;
           }
 
           throw _iteratorError2;
 
-        case 78:
-          return _context.finish(75);
+        case 87:
+          return _context.finish(84);
 
-        case 79:
-          return _context.finish(72);
+        case 88:
+          return _context.finish(81);
 
-        case 80:
+        case 89:
           if (!(task === 'import')) {
-            _context.next = 89;
+            _context.next = 98;
             break;
           }
 
           if (sourceFile) {
-            _context.next = 83;
+            _context.next = 92;
             break;
           }
 
@@ -340,25 +366,25 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 83:
+        case 92:
           _context.t3 = JSON;
-          _context.next = 86;
+          _context.next = 95;
           return _regenerator2.default.awrap(readFile({ file: sourceFile }));
 
-        case 86:
+        case 95:
           _context.t4 = _context.sent;
           sourceFileData = _context.t3.parse.call(_context.t3, _context.t4);
 
           settingsData[settings] = sourceFileData;
 
-        case 89:
+        case 98:
           if (!(task === 'import' || task === 'copy' || task === 'validate')) {
-            _context.next = 101;
+            _context.next = 110;
             break;
           }
 
           if (destinationApiKeys) {
-            _context.next = 94;
+            _context.next = 103;
             break;
           }
 
@@ -385,14 +411,14 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 94:
+        case 103:
           if (!(destinationApiKeys.indexOf('_new') !== -1)) {
-            _context.next = 101;
+            _context.next = 110;
             break;
           }
 
           if (newSiteBaseDomain) {
-            _context.next = 97;
+            _context.next = 106;
             break;
           }
 
@@ -408,9 +434,9 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 97:
+        case 106:
           if (newSiteDescription) {
-            _context.next = 99;
+            _context.next = 108;
             break;
           }
 
@@ -426,9 +452,9 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 99:
+        case 108:
           if (newSiteDataCenter) {
-            _context.next = 101;
+            _context.next = 110;
             break;
           }
 
@@ -444,9 +470,9 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 101:
+        case 110:
           if (!(task === 'export')) {
-            _context.next = 104;
+            _context.next = 113;
             break;
           }
 
@@ -465,9 +491,9 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 104:
+        case 113:
           if (!(task === 'copy' || task === 'import')) {
-            _context.next = 139;
+            _context.next = 148;
             break;
           }
 
@@ -475,21 +501,21 @@ var toolkit = function _callee(_ref) {
           _iteratorNormalCompletion3 = true;
           _didIteratorError3 = false;
           _iteratorError3 = undefined;
-          _context.prev = 108;
+          _context.prev = 117;
           _iterator3 = (0, _getIterator3.default)(destinationApiKeys);
 
-        case 110:
+        case 119:
           if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
-            _context.next = 124;
+            _context.next = 133;
             break;
           }
 
           destinationApiKey = _step3.value;
           _context.t5 = _regenerator2.default.keys(settingsData);
 
-        case 113:
+        case 122:
           if ((_context.t6 = _context.t5()).done) {
-            _context.next = 121;
+            _context.next = 130;
             break;
           }
 
@@ -512,53 +538,53 @@ var toolkit = function _callee(_ref) {
           }
 
           // Update via API call
-          _context.next = 119;
+          _context.next = 128;
           return _regenerator2.default.awrap(crud('update', _setting2, params));
 
-        case 119:
-          _context.next = 113;
+        case 128:
+          _context.next = 122;
           break;
 
-        case 121:
+        case 130:
           _iteratorNormalCompletion3 = true;
-          _context.next = 110;
+          _context.next = 119;
           break;
 
-        case 124:
-          _context.next = 130;
+        case 133:
+          _context.next = 139;
           break;
 
-        case 126:
-          _context.prev = 126;
-          _context.t7 = _context['catch'](108);
+        case 135:
+          _context.prev = 135;
+          _context.t7 = _context['catch'](117);
           _didIteratorError3 = true;
           _iteratorError3 = _context.t7;
 
-        case 130:
-          _context.prev = 130;
-          _context.prev = 131;
+        case 139:
+          _context.prev = 139;
+          _context.prev = 140;
 
           if (!_iteratorNormalCompletion3 && _iterator3.return) {
             _iterator3.return();
           }
 
-        case 133:
-          _context.prev = 133;
+        case 142:
+          _context.prev = 142;
 
           if (!_didIteratorError3) {
-            _context.next = 136;
+            _context.next = 145;
             break;
           }
 
           throw _iteratorError3;
 
-        case 136:
-          return _context.finish(133);
+        case 145:
+          return _context.finish(142);
 
-        case 137:
-          return _context.finish(130);
+        case 146:
+          return _context.finish(139);
 
-        case 138:
+        case 147:
           return _context.abrupt('return', {
             view: 'info',
             params: {
@@ -566,9 +592,9 @@ var toolkit = function _callee(_ref) {
             }
           });
 
-        case 139:
+        case 148:
           if (!(task === 'validate')) {
-            _context.next = 270;
+            _context.next = 279;
             break;
           }
 
@@ -577,71 +603,71 @@ var toolkit = function _callee(_ref) {
           _iteratorNormalCompletion4 = true;
           _didIteratorError4 = false;
           _iteratorError4 = undefined;
-          _context.prev = 145;
+          _context.prev = 154;
           _iterator4 = (0, _getIterator3.default)(settings);
 
-        case 147:
+        case 156:
           if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
-            _context.next = 155;
+            _context.next = 164;
             break;
           }
 
           _setting3 = _step4.value;
-          _context.next = 151;
+          _context.next = 160;
           return _regenerator2.default.awrap(crud('fetch', _setting3, { apiKey: sourceApiKey }));
 
-        case 151:
+        case 160:
           sourceObjs[_setting3] = _context.sent;
 
-        case 152:
+        case 161:
           _iteratorNormalCompletion4 = true;
-          _context.next = 147;
+          _context.next = 156;
           break;
 
-        case 155:
-          _context.next = 161;
+        case 164:
+          _context.next = 170;
           break;
 
-        case 157:
-          _context.prev = 157;
-          _context.t8 = _context['catch'](145);
+        case 166:
+          _context.prev = 166;
+          _context.t8 = _context['catch'](154);
           _didIteratorError4 = true;
           _iteratorError4 = _context.t8;
 
-        case 161:
-          _context.prev = 161;
-          _context.prev = 162;
+        case 170:
+          _context.prev = 170;
+          _context.prev = 171;
 
           if (!_iteratorNormalCompletion4 && _iterator4.return) {
             _iterator4.return();
           }
 
-        case 164:
-          _context.prev = 164;
+        case 173:
+          _context.prev = 173;
 
           if (!_didIteratorError4) {
-            _context.next = 167;
+            _context.next = 176;
             break;
           }
 
           throw _iteratorError4;
 
-        case 167:
-          return _context.finish(164);
+        case 176:
+          return _context.finish(173);
 
-        case 168:
-          return _context.finish(161);
+        case 177:
+          return _context.finish(170);
 
-        case 169:
+        case 178:
           _iteratorNormalCompletion5 = true;
           _didIteratorError5 = false;
           _iteratorError5 = undefined;
-          _context.prev = 172;
+          _context.prev = 181;
           _iterator5 = (0, _getIterator3.default)(destinationApiKeys);
 
-        case 174:
+        case 183:
           if (_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done) {
-            _context.next = 255;
+            _context.next = 264;
             break;
           }
 
@@ -650,12 +676,12 @@ var toolkit = function _callee(_ref) {
           _iteratorNormalCompletion6 = true;
           _didIteratorError6 = false;
           _iteratorError6 = undefined;
-          _context.prev = 180;
+          _context.prev = 189;
           _iterator6 = (0, _getIterator3.default)(settings);
 
-        case 182:
+        case 191:
           if (_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done) {
-            _context.next = 237;
+            _context.next = 246;
             break;
           }
 
@@ -663,10 +689,10 @@ var toolkit = function _callee(_ref) {
 
           // Fetch objects and run jsdiff
           sourceObj = sourceObjs[_setting4];
-          _context.next = 187;
+          _context.next = 196;
           return _regenerator2.default.awrap(crud('fetch', _setting4, { apiKey: _destinationApiKey }));
 
-        case 187:
+        case 196:
           destinationObj = _context.sent;
           diff = jsdiff.diffJson(sourceObj, destinationObj);
 
@@ -677,7 +703,7 @@ var toolkit = function _callee(_ref) {
           _iteratorNormalCompletion7 = true;
           _didIteratorError7 = false;
           _iteratorError7 = undefined;
-          _context.prev = 194;
+          _context.prev = 203;
 
           for (_iterator7 = (0, _getIterator3.default)(diff); !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
             part = _step7.value;
@@ -688,40 +714,40 @@ var toolkit = function _callee(_ref) {
               numRemoved += part.count;
             }
           }
-          _context.next = 202;
+          _context.next = 211;
           break;
 
-        case 198:
-          _context.prev = 198;
-          _context.t9 = _context['catch'](194);
+        case 207:
+          _context.prev = 207;
+          _context.t9 = _context['catch'](203);
           _didIteratorError7 = true;
           _iteratorError7 = _context.t9;
 
-        case 202:
-          _context.prev = 202;
-          _context.prev = 203;
+        case 211:
+          _context.prev = 211;
+          _context.prev = 212;
 
           if (!_iteratorNormalCompletion7 && _iterator7.return) {
             _iterator7.return();
           }
 
-        case 205:
-          _context.prev = 205;
+        case 214:
+          _context.prev = 214;
 
           if (!_didIteratorError7) {
-            _context.next = 208;
+            _context.next = 217;
             break;
           }
 
           throw _iteratorError7;
 
-        case 208:
-          return _context.finish(205);
+        case 217:
+          return _context.finish(214);
 
-        case 209:
-          return _context.finish(202);
+        case 218:
+          return _context.finish(211);
 
-        case 210:
+        case 219:
           numChanged = Math.min(numAdded, numRemoved);
 
           numRemoved -= numChanged;
@@ -734,7 +760,7 @@ var toolkit = function _callee(_ref) {
           _iteratorNormalCompletion8 = true;
           _didIteratorError8 = false;
           _iteratorError8 = undefined;
-          _context.prev = 217;
+          _context.prev = 226;
           for (_iterator8 = (0, _getIterator3.default)(diff); !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
             _part = _step8.value;
 
@@ -765,40 +791,40 @@ var toolkit = function _callee(_ref) {
           }
 
           // This is what we're returning
-          _context.next = 225;
+          _context.next = 234;
           break;
 
-        case 221:
-          _context.prev = 221;
-          _context.t10 = _context['catch'](217);
+        case 230:
+          _context.prev = 230;
+          _context.t10 = _context['catch'](226);
           _didIteratorError8 = true;
           _iteratorError8 = _context.t10;
 
-        case 225:
-          _context.prev = 225;
-          _context.prev = 226;
+        case 234:
+          _context.prev = 234;
+          _context.prev = 235;
 
           if (!_iteratorNormalCompletion8 && _iterator8.return) {
             _iterator8.return();
           }
 
-        case 228:
-          _context.prev = 228;
+        case 237:
+          _context.prev = 237;
 
           if (!_didIteratorError8) {
-            _context.next = 231;
+            _context.next = 240;
             break;
           }
 
           throw _iteratorError8;
 
-        case 231:
-          return _context.finish(228);
+        case 240:
+          return _context.finish(237);
 
-        case 232:
-          return _context.finish(225);
+        case 241:
+          return _context.finish(234);
 
-        case 233:
+        case 242:
           diffs.push({
             setting: _setting4,
             diff: diff,
@@ -810,103 +836,103 @@ var toolkit = function _callee(_ref) {
             numChanged: numChanged
           });
 
-        case 234:
+        case 243:
           _iteratorNormalCompletion6 = true;
-          _context.next = 182;
+          _context.next = 191;
           break;
 
-        case 237:
-          _context.next = 243;
+        case 246:
+          _context.next = 252;
           break;
 
-        case 239:
-          _context.prev = 239;
-          _context.t11 = _context['catch'](180);
+        case 248:
+          _context.prev = 248;
+          _context.t11 = _context['catch'](189);
           _didIteratorError6 = true;
           _iteratorError6 = _context.t11;
 
-        case 243:
-          _context.prev = 243;
-          _context.prev = 244;
+        case 252:
+          _context.prev = 252;
+          _context.prev = 253;
 
           if (!_iteratorNormalCompletion6 && _iterator6.return) {
             _iterator6.return();
           }
 
-        case 246:
-          _context.prev = 246;
+        case 255:
+          _context.prev = 255;
 
           if (!_didIteratorError6) {
-            _context.next = 249;
+            _context.next = 258;
             break;
           }
 
           throw _iteratorError6;
 
-        case 249:
-          return _context.finish(246);
+        case 258:
+          return _context.finish(255);
 
-        case 250:
-          return _context.finish(243);
+        case 259:
+          return _context.finish(252);
 
-        case 251:
+        case 260:
 
           validations.push({ diffs: diffs, site: _.find(partnerSites[0].sites, { apiKey: _destinationApiKey }) });
 
-        case 252:
+        case 261:
           _iteratorNormalCompletion5 = true;
-          _context.next = 174;
+          _context.next = 183;
           break;
 
-        case 255:
-          _context.next = 261;
+        case 264:
+          _context.next = 270;
           break;
 
-        case 257:
-          _context.prev = 257;
-          _context.t12 = _context['catch'](172);
+        case 266:
+          _context.prev = 266;
+          _context.t12 = _context['catch'](181);
           _didIteratorError5 = true;
           _iteratorError5 = _context.t12;
 
-        case 261:
-          _context.prev = 261;
-          _context.prev = 262;
+        case 270:
+          _context.prev = 270;
+          _context.prev = 271;
 
           if (!_iteratorNormalCompletion5 && _iterator5.return) {
             _iterator5.return();
           }
 
-        case 264:
-          _context.prev = 264;
+        case 273:
+          _context.prev = 273;
 
           if (!_didIteratorError5) {
-            _context.next = 267;
+            _context.next = 276;
             break;
           }
 
           throw _iteratorError5;
 
-        case 267:
-          return _context.finish(264);
+        case 276:
+          return _context.finish(273);
 
-        case 268:
-          return _context.finish(261);
+        case 277:
+          return _context.finish(270);
 
-        case 269:
+        case 278:
           return _context.abrupt('return', {
             view: 'validate',
             params: { validations: validations }
           });
 
-        case 270:
+        case 279:
           throw new Error('No view rendered.');
 
-        case 271:
+        case 280:
         case 'end':
           return _context.stop();
       }
     }
-  }, null, this, [[29, 33, 37, 45], [38,, 40, 44], [56, 68, 72, 80], [73,, 75, 79], [108, 126, 130, 138], [131,, 133, 137], [145, 157, 161, 169], [162,, 164, 168], [172, 257, 261, 269], [180, 239, 243, 251], [194, 198, 202, 210], [203,, 205, 209], [217, 221, 225, 233], [226,, 228, 232], [244,, 246, 250], [262,, 264, 268]]);
+  }, null, this, [[29, 42, 46, 54], [47,, 49, 53], [65, 77, 81, 89], [82,, 84, 88], [117, 135, 139, 147], [140,, 142, 146], [154, 166, 170, 178], [171,, 173, 177], [181, 266, 270, 278], [189, 248, 252, 260], [203, 207, 211, 219], [212,, 214, 218], [226, 230, 234, 242], [235,, 237, 241], [253,, 255, 259], [271,, 273, 277]]);
 };
 
 module.exports = toolkit;
